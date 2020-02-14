@@ -50,11 +50,6 @@ def add_category(request):
     
     form = CategoryForm()
     if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        if not user.is_valid():
-            return redirect('/rango/')
         form = CategoryForm(request.POST)
     
         if form.is_valid():
@@ -77,16 +72,10 @@ def add_page(request, category_name_slug):
     form = PageForm()
     
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        if not user.is_valid():
-            return redirect('/rango/')
         form = PageForm(request.POST)
         
         if form.is_valid():
             if category:
-                if user.is_valid():
                     page = form.save(commit=False)
                     page.category = category
                     page.views = 0
