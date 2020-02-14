@@ -137,7 +137,8 @@ def user_login(request):
         return render(request, 'rango/login.html')
 @login_required
 def restricted(request):
-    
+    if not request.user.is_valid():
+        redirect(reverse('rango/login.html'))
     return render(request, 'rango/restricted.html')
     
 @login_required
