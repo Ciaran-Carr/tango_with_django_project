@@ -44,7 +44,8 @@ def show_category(request, category_name_slug):
         context_dict['pages'] = None
         
     return render(request, 'rango/category.html', context=context_dict)
-    
+
+@login_required()    
 def add_category(request):
 
     
@@ -60,6 +61,7 @@ def add_category(request):
     
     return render(request, 'rango/add_category.html', {'form': form})
 
+@login_required()
 def add_page(request, category_name_slug):
     try:
         category = Category.objects.get(slug=category_name_slug)
@@ -89,7 +91,7 @@ def add_page(request, category_name_slug):
     return render(request, 'rango/add_page.html', context = context_dict)
 
 def register(request):
-    registered = False 
+    registered = request.user.is_authenticated
     
     if request.method == 'POST':
         user_form = UserForm(request.POST)
@@ -107,6 +109,8 @@ def register(request):
                 profile.picture = request.FILES['picture']
                 profile.save()
                 registered = True
+                
+            redirect(reverse('rango/register'))
             
         else:
             print(user_form.errors, profile_form.errors)
@@ -135,13 +139,12 @@ def user_login(request):
             return HttpResponse("Invalid login details supplied.")
     else:
         return render(request, 'rango/login.html')
-@login_required
+        
+@login_required()
 def restricted(request):
-    if not request.user.is_valid():
-        redirect(reverse('rango/login.html'))
     return render(request, 'rango/restricted.html')
     
-@login_required
+@login_required()
 def user_logout(request):
     logout(request)
     return redirect(reverse('rango:index'))
